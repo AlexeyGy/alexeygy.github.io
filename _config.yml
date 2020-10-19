@@ -26,6 +26,11 @@ url: https://alexeygy.github.io
 # then add in the baseurl here, like this: "/repository-name"
 baseurl: ""
 
+prose:
+  rooturl: '_posts'
+  siteurl: 'http://alexeygy.github.io'
+  media: 'media'
+
 #
 # !! You don't need to change any of the configuration flags below !!
 #
