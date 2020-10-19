@@ -30,6 +30,10 @@ prose:
   siteurl: 'http://alexeygy.github.io'
   media: 'media'
 
+plugins:
+  - jekyll-remote-theme
+
+remote_theme: ngzhio/jekyll-theme-hamilton
 #
 # !! You don't need to change any of the configuration flags below !!
 #
