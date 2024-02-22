@@ -1,0 +1,1 @@
+Minimalist homepage including a blog projects, and an about page.
