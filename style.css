@@ -1,0 +1,63 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    background: #262626;
+    color: #EEE;
+    font-family: 'Press Start 2P', monospace;
+    line-height: 1.5em;
+    cursor: url('images/cursor-alt-smaller.png'), auto;
+}
+
+h1 {
+    line-height: 1.25em;
+}
+
+h2 {
+    line-height: 1.5em;
+}
+
+header,
+footer {
+    text-align: center;
+    padding: 1em;
+    background: #262626;
+    color: #EEE;
+}
+
+a {
+    color: #EEE;
+    text-decoration-line: none;
+    cursor: url('images/cursor-alt-smaller.png'), auto;
+}
+
+a:hover {
+    color: yellow;
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+nav {
+    color: #EEE;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    color: #EEE;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+    color: #EEE;
+}
+
+main {
+    padding: 20px;
+    color: #EEE;
+}
+
+.markdown-style {
+    color: white !important;
+}
