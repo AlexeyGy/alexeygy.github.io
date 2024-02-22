@@ -58,6 +58,9 @@ main {
     color: #EEE;
 }
 
-.markdown-style {
-    color: white !important;
+canvas {
+    border: solid;
+    border-width: 0.5px;
+    display: block;
+    margin: 0 auto;
 }

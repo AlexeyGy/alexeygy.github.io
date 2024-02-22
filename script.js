@@ -3,6 +3,8 @@ generateHeader();
 generateFooter();
 
 
+
+
 //--- function definitions ---//
 function generateFooter() {
     document.addEventListener('DOMContentLoaded', function () {
