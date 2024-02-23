@@ -64,3 +64,8 @@ canvas {
     display: block;
     margin: 0 auto;
 }
+
+#score {
+    margin-top: 0.5em;
+    text-align: center;
+}
