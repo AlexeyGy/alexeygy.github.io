@@ -1,15 +1,34 @@
 var canvas = document.getElementById("pongCanvas");
 var ctx = canvas.getContext("2d");
-canvas.width = 600;
-canvas.height = 400;
+
+const mediaQuery = window.matchMedia('(max-width: 600px)');
+// Function to handle the media query 'change' event
+function handleMediaQueryChange(e) {
+    if (e.matches) {
+        // Execute mobile-specific JavaScript here
+        canvas.width = 300;
+        canvas.height = 200;
+
+    } else {
+        // Execute tablet/desktop-specific JavaScript here
+        canvas.width = 600;
+        canvas.height = 400;
+    }
+}
+
+// Add listener for changes to the media query state
+mediaQuery.addListener(handleMediaQueryChange);
+
+// Call the function initially to set up the correct state from the start
+handleMediaQueryChange(mediaQuery);
 
 let leftScore = 0;
 let rightScore = 0;
 
 const INITIAL_BALL_SPEED = 3;
 
-var paddleHeight = 80;
-var paddleWidth = 10;
+var paddleWidth = canvas.width / 60;
+var paddleHeight = canvas.height / 5;
 
 var rightPaddleY = (canvas.height - paddleHeight) / 2;
 var leftPaddleY = (canvas.height - paddleHeight) / 2;
@@ -21,7 +40,7 @@ const PADDLE_SPEED = 6;
 var ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
-    radius: 10,
+    radius: canvas.width / 60,
     velocityX: INITIAL_BALL_SPEED,
     velocityY: INITIAL_BALL_SPEED,
     color: "#FFF"
@@ -122,6 +141,7 @@ function game() {
     render();
 }
 
+// 60 FPS.
 setInterval(game, 1000 / 60);
 
 document.addEventListener("keydown", function (evt) {
