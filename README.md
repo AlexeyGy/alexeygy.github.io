@@ -1,1 +1,1 @@
-Minimalist homepage including a blog projects, and an about page.
+This is my personal homepage hosted at alexeygy.github.io.
