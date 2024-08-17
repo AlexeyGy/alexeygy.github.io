@@ -8,12 +8,11 @@ function handleMediaQueryChange(e) {
         // Execute mobile-specific JavaScript here
         canvas.width = 300;
         canvas.height = 200;
-
-    } else {
-        // Execute tablet/desktop-specific JavaScript here
-        canvas.width = 600;
-        canvas.height = 400;
+        return;
     }
+    // Execute tablet/desktop-specific JavaScript here
+    canvas.width = 600;
+    canvas.height = 400;
 }
 
 // Add listener for changes to the media query state
@@ -144,6 +143,7 @@ function game() {
 // 60 FPS.
 setInterval(game, 1000 / 60);
 
+// controls
 document.addEventListener("keydown", function (evt) {
     switch (evt.keyCode) {
         case 87: // W key

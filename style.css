@@ -31,6 +31,10 @@ a {
     cursor: url('images/cursor-alt-smaller.png'), auto;
 }
 
+.linkedin {
+    color: lightsteelblue;
+}
+
 a:hover {
     color: yellow;
     background-color: transparent;
