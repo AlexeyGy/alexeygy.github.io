@@ -69,7 +69,13 @@ canvas {
     margin: 0 auto;
 }
 
-#score {
+
+.info_panel {
     margin-top: 0.5em;
+    color: #EEE;
+    font-family: 'Press Start 2P', monospace;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
 }
