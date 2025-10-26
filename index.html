@@ -17,7 +17,19 @@
     </main>
 
     <canvas id="pongCanvas"></canvas>
-    <div id="score">Score: 0</div>
+    <div class="info_panel">
+        <span id="score">Score: 0</span>
+        <span> | </span>
+        <div class="hit_count_container">
+            <span>Hits:</span>
+            <span id="hit_count">0</span>
+        </div>
+        <span> | </span>
+        <div class="ball_speed_container">
+            <span>Speed:</span>
+            <span id="ball_speed">n/a</span>
+        </div>
+    </div>
 
     <div id="footer-placeholder"></div>
     <script src="header_footer_script.js"></script>
