@@ -34,6 +34,7 @@ var leftPaddleY = (canvas.height - paddleHeight) / 2;
 
 var rightPaddleVelocity = 0;
 var leftPaddleVelocity = 0;
+let debounceTick = false;
 const PADDLE_SPEED = 6;
 
 var ball = {
@@ -44,6 +45,8 @@ var ball = {
     velocityY: INITIAL_BALL_SPEED,
     color: "#FFF"
 };
+
+let numHits = 0;
 
 function drawPaddle(x, y) {
     ctx.fillStyle = "#FFF";
@@ -59,6 +62,12 @@ function drawBall() {
 }
 
 function collisionDetection() {
+    // debounce to prevent multiple hits
+    if (debounceTick) {
+        debounceTick = false;
+        return;
+    }
+
     // hit top/bottom wall
     if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
         ball.velocityY = -ball.velocityY;
@@ -71,15 +80,23 @@ function collisionDetection() {
         ball.velocityX = -ball.velocityX;
         ball.velocityX *= 1.1;
         ball.velocityY *= 1.1;
+        updateBallSpeed();
+        numHits++;
+        updateHitCount();
+        debounceTick = true;
+        return; // skip scoring check on paddle hit
     }
 
-    // scores
+    // hit left
     if (ball.x - ball.radius < 0) {
         resetGame();
         increaseRightScore();
+        debounceTick = true;
+        // hit right
     } else if (ball.x + ball.radius > canvas.width) {
         resetGame();
         increaseLeftScore();
+        debounceTick = true;
     }
 }
 
@@ -94,6 +111,20 @@ function increaseRightScore() {
     document.getElementById('score').innerText = 'Score: ' + leftScore + ':' + rightScore;
 }
 
+/**
+ * Updates the displayed ball speed.
+ */
+function updateBallSpeed() {
+    const currentSpeed = Math.sqrt(ball.velocityX ** 2 + ball.velocityY ** 2);
+    document.getElementById('ball_speed').innerText = currentSpeed.toFixed(2);
+}
+
+/**
+ * Updates the displayed hit count.
+ */
+function updateHitCount() {
+    document.getElementById('hit_count').innerText = numHits;
+}
 
 function resetGame() {
     ball.x = canvas.width / 2;
@@ -106,6 +137,9 @@ function resetGame() {
 
     ball.velocityX = INITIAL_BALL_SPEED * direction;
     ball.velocityY = INITIAL_BALL_SPEED * direction;
+
+    numHits = 0;
+    updateBallSpeed();
 }
 
 function movePaddle() {
@@ -142,6 +176,8 @@ function game() {
 
 // 60 FPS.
 setInterval(game, 1000 / 60);
+
+updateBallSpeed();
 
 // controls
 document.addEventListener("keydown", function (evt) {
