@@ -6,7 +6,7 @@ html {
     color: #EEE;
     font-family: 'Press Start 2P', monospace;
     line-height: 1.5em;
-    cursor: url('images/cursor-alt-smaller.png'), auto;
+    cursor: url('/images/cursor-alt-smaller.png'), auto;
 }
 
 h1 {
@@ -28,7 +28,7 @@ footer {
 a {
     color: #EEE;
     text-decoration-line: none;
-    cursor: url('images/cursor-alt-smaller.png'), auto;
+    cursor: url('/images/cursor-alt-smaller.png'), auto;
 }
 
 .linkedin {
