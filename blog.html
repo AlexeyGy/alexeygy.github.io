@@ -1,43 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<html lang="en"><head>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog</title>
     <link rel="stylesheet" href="style.css">
-
-    <!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
-    <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
-
-    <!-- Load the element definition -->
-    <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
+    <style>
+        main {
+            font-family: Helvetica, Arial, sans-serif;
+        }
+    </style>    
 </head>
 
 <body>
     <div id="nav-placeholder"></div>
+    <main id="content">
+<article class="blog-post" id="verdichtung">
+    <h2>Verdichtung</h2>
+    <div class="post-content">
+        <h2>2025-11-05 - Verdichtung</h2>
+<p>Verdichtung is German word that loosely means "densification". It represents an alternative to urban sprawl that is prevalent in US citizies and has been the prevalent strategy for Swiss city expansion.</p>
+<p>What it means is that even though there would theoretically new space available, the city, or canton instead prefer to repurpose existing buildings by increasing the number of floors or by reducing the (often useless) distance between buildings.</p>
+<p>I am actually currently living in such a building created from Verdichtung where before this was a parking lot.</p>
+<p>Short-term, this seems like much less nice than living in a suburban area but long-term this is much more sustainable. Has it been able to meet demands? No, Zurich's rental market is one of the worst in the world.</p>
+<h3>Zurich's ups and downs</h3>
+<p>Zurich has a weird history when it comes to it's urban population where</p>
 
-    <main>
-        <h1>Blog</h1>
-        <zero-md src="blog.md">
-            <template>
-                <style>
-                    div {
-                        font-family: Helvetica, Arial sans-serif;
-                    }
+    </div>
+</article>
+        
 
-                    /* h1 {
-                        color: red;
-                    } */
-                </style>
-                <!-- Load external stylesheets with a `<link rel="stylesheet">` tag -->
-                <!-- <link rel="stylesheet" href="markdown-styles.css" /> -->
-            </template>
-        </zero-md>
-    </main>
+<article class="blog-post" id="filter">
+    <h2>Filter</h2>
+    <div class="post-content">
+        <h2>2020-10-19 - How to set up a proper Google Mail filter on responses only</h2>
+<h3>Problem</h3>
+<p>When creating events in gmail with a large number of invitees, you, by default receive an email per response. But maybe you are just like me and want your inbox to be clean s.t. all invite responses go into one folder excluding invites that you get from others you find that this is neither covered in the official guide by Google nor in other articles.</p>
+<h3>Solution</h3>
+<p>The following “has the words” filter makes sure to only include mails which are responses and are actual invite responses by checking the attachment name.</p>
+<pre><code>subject:(Declined OR Accepted) ((to:(alexeygy@uber.com) (invite.ics OR invite.vcs)) has:attachment)
+</code></pre>
+<p>It can be set under <code>settings/Filters</code> and <code>Blocked Addresses/ Create a new filter</code>.</p>
+<p><img src="../images/0_ioWsIdcYLX2rUNMs.png" alt="screenshot of gmail"></p>
+<p>So far it worked for me reliably helping to keep my inbox clean. text in <a href="http://daringfireball.net/projects/markdown/">Markdown</a>. Use the toolbar above, or click the <strong>?</strong> button for formatting help.</p>
+
+    </div>
+</article>
+        </main>
     <div id="footer-placeholder"></div>
     <script src="header_footer_script.js"></script>
-</body>
 
-</html>
+
+</body></html>
