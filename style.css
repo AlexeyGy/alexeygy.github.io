@@ -71,11 +71,16 @@ nav ul {
     list-style-type: none;
     padding: 0;
     color: var(--text-color);
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    /* Center the menu items */
+    flex-wrap: wrap;
+    /* Allow wrapping if screen is too small, but control it */
 }
 
 nav ul li {
-    display: inline;
-    margin-right: 20px;
     color: var(--text-color);
 }
 
@@ -101,4 +106,55 @@ canvas {
     display: flex;
     justify-content: center;
     gap: 1rem;
+}
+
+/* Theme Toggle Animation */
+.theme-icon {
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sun {
+    transition: r 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    mask: url(#moon-mask);
+}
+
+.sun-beams {
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    transform-origin: center;
+}
+
+#moon-mask circle {
+    transition: cx 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Light Mode State (Sun) */
+[data-theme="light"] .sun {
+    r: 6;
+}
+
+[data-theme="light"] .sun-beams {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+[data-theme="light"] #moon-mask circle {
+    cx: 24;
+    /* Move mask out of the way */
+}
+
+/* Dark Mode State (Moon) */
+/* Default is Dark, but we need to target it specifically if data-theme is missing or explicit */
+:root:not([data-theme="light"]) .sun {
+    r: 9;
+    /* Larger circle for moon */
+}
+
+:root:not([data-theme="light"]) .sun-beams {
+    opacity: 0;
+    transform: rotate(45deg);
+}
+
+:root:not([data-theme="light"]) #moon-mask circle {
+    cx: 17;
+    /* Move mask in to create crescent */
 }
