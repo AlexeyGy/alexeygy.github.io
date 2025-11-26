@@ -51,6 +51,8 @@ let numHits = 0;
 function drawPaddle(x, y) {
     ctx.fillStyle = "#FFF";
     ctx.fillRect(x, y, paddleWidth, paddleHeight);
+    ctx.strokeStyle = "#000";
+    ctx.strokeRect(x, y, paddleWidth, paddleHeight);
 }
 
 function drawBall() {
