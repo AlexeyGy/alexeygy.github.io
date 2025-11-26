@@ -1,12 +1,33 @@
+:root {
+    --bg-color: #262626;
+    --text-color: #EEE;
+    --link-color: #EEE;
+    --link-hover-color: yellow;
+    --linkedin-color: lightsteelblue;
+    --border-color: #EEE;
+    --cursor-url: url('/images/cursor-alt-smaller.png');
+}
+
+[data-theme="light"] {
+    --bg-color: #f0f0f0;
+    --text-color: #262626;
+    --link-color: #262626;
+    --link-hover-color: #d00000;
+    --linkedin-color: #0077b5;
+    --border-color: #262626;
+    --cursor-url: url('/images/cursor-alt-smaller.png');
+}
+
 body,
 html {
     margin: 0;
     padding: 0;
-    background: #262626;
-    color: #EEE;
+    background: var(--bg-color);
+    color: var(--text-color);
     font-family: 'Press Start 2P', monospace;
     line-height: 1.5em;
-    cursor: url('/images/cursor-alt-smaller.png'), auto;
+    cursor: var(--cursor-url), auto;
+    transition: background 0.3s, color 0.3s;
 }
 
 h1 {
@@ -21,50 +42,52 @@ header,
 footer {
     text-align: center;
     padding: 1em;
-    background: #262626;
-    color: #EEE;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: background 0.3s, color 0.3s;
 }
 
 a {
-    color: #EEE;
+    color: var(--link-color);
     text-decoration-line: none;
-    cursor: url('/images/cursor-alt-smaller.png'), auto;
+    cursor: var(--cursor-url), auto;
 }
 
 .linkedin {
-    color: lightsteelblue;
+    color: var(--linkedin-color);
 }
 
 a:hover {
-    color: yellow;
+    color: var(--link-hover-color);
     background-color: transparent;
     text-decoration: underline;
 }
 
 nav {
-    color: #EEE;
+    color: var(--text-color);
 }
 
 nav ul {
     list-style-type: none;
     padding: 0;
-    color: #EEE;
+    color: var(--text-color);
 }
 
 nav ul li {
     display: inline;
     margin-right: 20px;
-    color: #EEE;
+    color: var(--text-color);
 }
 
 main {
     padding: 20px;
-    color: #EEE;
+    color: var(--text-color);
 }
 
 canvas {
     border: solid;
     border-width: 0.5px;
+    border-color: var(--border-color);
     display: block;
     margin: 0 auto;
 }
@@ -72,7 +95,7 @@ canvas {
 
 .info_panel {
     margin-top: 0.5em;
-    color: #EEE;
+    color: var(--text-color);
     font-family: 'Press Start 2P', monospace;
     text-align: center;
     display: flex;
