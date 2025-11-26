@@ -176,9 +176,23 @@ function game() {
     render();
 }
 
-// 60 FPS.
-setInterval(game, 1000 / 60);
 
+// Game start logic
+let gameInterval;
+let isGameRunning = false;
+
+function startGame() {
+    if (isGameRunning) return;
+    isGameRunning = true;
+    document.getElementById('playButtonContainer').style.display = 'none';
+    // 60 FPS.
+    gameInterval = setInterval(game, 1000 / 60);
+}
+
+document.getElementById('playButton').addEventListener('click', startGame);
+
+// Initial render so the game is visible before starting
+render();
 updateBallSpeed();
 
 // controls

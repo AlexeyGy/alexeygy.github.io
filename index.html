@@ -16,7 +16,13 @@
         <span>Left racket: W,S | Right racket: ↑,↓ </span>
     </main>
 
-    <canvas id="pongCanvas"></canvas>
+    <div class="pong-container">
+        <canvas id="pongCanvas"></canvas>
+        <div id="playButtonContainer"
+            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <button id="playButton" class="retro-btn">PLAY</button>
+        </div>
+    </div>
     <div class="info_panel">
         <span id="score">Score: 0</span>
         <span> | </span>
