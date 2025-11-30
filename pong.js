@@ -25,6 +25,7 @@ let leftScore = 0;
 let rightScore = 0;
 
 const INITIAL_BALL_SPEED = 3;
+const COMPUTED_BALL_SPEED = Math.sqrt(INITIAL_BALL_SPEED ** 2 + INITIAL_BALL_SPEED ** 2);
 
 var paddleWidth = canvas.width / 60;
 var paddleHeight = canvas.height / 5;
@@ -34,15 +35,14 @@ var leftPaddleY = (canvas.height - paddleHeight) / 2;
 
 var rightPaddleVelocity = 0;
 var leftPaddleVelocity = 0;
-let debounceTick = false;
 const PADDLE_SPEED = 6;
 
 var ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     radius: canvas.width / 60,
-    velocityX: INITIAL_BALL_SPEED,
-    velocityY: INITIAL_BALL_SPEED,
+    velocityX: (Math.random() < 0.5 ? 1 : -1) * INITIAL_BALL_SPEED,
+    velocityY: (Math.random() < 0.5 ? 1 : -1) * INITIAL_BALL_SPEED,
     color: "#FFF"
 };
 
@@ -64,10 +64,13 @@ function drawBall() {
 }
 
 function collisionDetection() {
-    // debounce to prevent multiple hits
-    if (debounceTick) {
-        debounceTick = false;
-        return;
+    if (ball.y + ball.radius > canvas.height) {
+        ball.velocityY = -ball.velocityY;
+        ball.y = canvas.height - ball.radius; // Snap to edge
+    }
+    if (ball.y - ball.radius < 0) {
+        ball.velocityY = -ball.velocityY;
+        ball.y = ball.radius; // Snap to edge
     }
 
     // hit top/bottom wall
@@ -85,7 +88,6 @@ function collisionDetection() {
         updateBallSpeed();
         numHits++;
         updateHitCount();
-        debounceTick = true;
         return; // skip scoring check on paddle hit
     }
 
@@ -93,12 +95,11 @@ function collisionDetection() {
     if (ball.x - ball.radius < 0) {
         resetGame();
         increaseRightScore();
-        debounceTick = true;
-        // hit right
-    } else if (ball.x + ball.radius > canvas.width) {
+    }
+    // hit right
+    else if (ball.x + ball.radius > canvas.width) {
         resetGame();
         increaseLeftScore();
-        debounceTick = true;
     }
 }
 
@@ -118,7 +119,8 @@ function increaseRightScore() {
  */
 function updateBallSpeed() {
     const currentSpeed = Math.sqrt(ball.velocityX ** 2 + ball.velocityY ** 2);
-    document.getElementById('ball_speed').innerText = currentSpeed.toFixed(2);
+    const speedPercentage = (currentSpeed / COMPUTED_BALL_SPEED) * 100;
+    document.getElementById('ball_speed').innerText = speedPercentage.toFixed(0) + '%';
 }
 
 /**
@@ -155,7 +157,19 @@ function movePaddle() {
     else if (rightPaddleY + paddleHeight > canvas.height) rightPaddleY = canvas.height - paddleHeight;
 }
 
+function doAiAction() {
+    // Controls the right paddle to follow the ball if the AI is active.    
+    if (ball.y < rightPaddleY + paddleHeight) {
+        rightPaddleVelocity = -PADDLE_SPEED / 2; // AI moves at half speed.
+    } else {
+        rightPaddleVelocity = PADDLE_SPEED / 2;
+    }
+}
+
 function update() {
+    if (isAiActive) {
+        doAiAction();
+    }
     movePaddle();
 
     ball.x += ball.velocityX;
@@ -177,55 +191,62 @@ function game() {
 }
 
 
+function setupPaddleControls() {
+    // controls
+    document.addEventListener("keydown", function (evt) {
+        switch (evt.key) {
+            case "w": // W key
+                leftPaddleVelocity = -PADDLE_SPEED;
+                break;
+            case "s": // S key
+                leftPaddleVelocity = PADDLE_SPEED;
+                break;
+            case "ArrowUp": // Up arrow
+                rightPaddleVelocity = -PADDLE_SPEED;
+                break;
+            case "ArrowDown": // Down arrow
+                rightPaddleVelocity = PADDLE_SPEED;
+                break;
+        }
+    });
+    document.addEventListener("keyup", function (evt) {
+        switch (evt.key) {
+            case "w": // W key
+                leftPaddleVelocity = 0;
+                break;
+            case "s": // S key
+                leftPaddleVelocity = 0;
+                break;
+            case "ArrowUp": // Up arrow
+                rightPaddleVelocity = 0;
+                break;
+            case "ArrowDown": // Down arrow
+                rightPaddleVelocity = 0;
+                break;
+        }
+    });
+}
+
 // Game start logic
 let gameInterval;
 let isGameRunning = false;
+let isAiActive = false;
 
 function startGame() {
     if (isGameRunning) return;
     isGameRunning = true;
     document.getElementById('playButtonContainer').style.display = 'none';
+
     // 60 FPS.
     gameInterval = setInterval(game, 1000 / 60);
 }
 
-document.getElementById('playButton').addEventListener('click', startGame);
-
-// Initial render so the game is visible before starting
-render();
-updateBallSpeed();
-
-// controls
-document.addEventListener("keydown", function (evt) {
-    switch (evt.keyCode) {
-        case 87: // W key
-            leftPaddleVelocity = -PADDLE_SPEED;
-            break;
-        case 83: // S key
-            leftPaddleVelocity = PADDLE_SPEED;
-            break;
-        case 38: // Up arrow
-            rightPaddleVelocity = -PADDLE_SPEED;
-            break;
-        case 40: // Down arrow
-            rightPaddleVelocity = PADDLE_SPEED;
-            break;
-    }
+document.getElementById('playButton2P').addEventListener('click', startGame);
+document.getElementById('playButton1P').addEventListener('click', () => {
+    isAiActive = true;
+    startGame();
 });
-document.addEventListener("keyup", function (evt) {
-    switch (evt.keyCode) {
-        case 87: // W key
-            leftPaddleVelocity = 0;
-            break;
-        case 83: // S key
-            leftPaddleVelocity = 0;
-            break;
-        case 38: // Up arrow
-            rightPaddleVelocity = 0;
-            break;
-        case 40: // Down arrow
-            rightPaddleVelocity = 0;
-            break;
-    }
-});
+
+
+setupPaddleControls();
 
