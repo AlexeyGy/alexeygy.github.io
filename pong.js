@@ -24,25 +24,25 @@ handleMediaQueryChange(mediaQuery);
 let leftScore = 0;
 let rightScore = 0;
 
-const INITIAL_BALL_SPEED = 3;
-const COMPUTED_BALL_SPEED = Math.sqrt(INITIAL_BALL_SPEED ** 2 + INITIAL_BALL_SPEED ** 2);
+let initialBallSpeed = canvas.width / 200;
+let computedBallSpeed = Math.sqrt(initialBallSpeed ** 2 + initialBallSpeed ** 2);
 
-var paddleWidth = canvas.width / 60;
-var paddleHeight = canvas.height / 5;
+let paddleWidth = canvas.width / 60;
+let paddleHeight = canvas.height / 5;
 
-var rightPaddleY = (canvas.height - paddleHeight) / 2;
-var leftPaddleY = (canvas.height - paddleHeight) / 2;
+let rightPaddleY = (canvas.height - paddleHeight) / 2;
+let leftPaddleY = (canvas.height - paddleHeight) / 2;
 
-var rightPaddleVelocity = 0;
-var leftPaddleVelocity = 0;
-const PADDLE_SPEED = 6;
+let rightPaddleVelocity = 0;
+let leftPaddleVelocity = 0;
+let paddleSpeed = 6;
 
-var ball = {
+let ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     radius: canvas.width / 60,
-    velocityX: (Math.random() < 0.5 ? 1 : -1) * INITIAL_BALL_SPEED,
-    velocityY: (Math.random() < 0.5 ? 1 : -1) * INITIAL_BALL_SPEED,
+    velocityX: (Math.random() < 0.5 ? 1 : -1) * initialBallSpeed,
+    velocityY: (Math.random() < 0.5 ? 1 : -1) * initialBallSpeed,
     color: "#FFF"
 };
 
@@ -119,7 +119,7 @@ function increaseRightScore() {
  */
 function updateBallSpeed() {
     const currentSpeed = Math.sqrt(ball.velocityX ** 2 + ball.velocityY ** 2);
-    const speedPercentage = (currentSpeed / COMPUTED_BALL_SPEED) * 100;
+    const speedPercentage = (currentSpeed / computedBallSpeed) * 100;
     document.getElementById('ball_speed').innerText = speedPercentage.toFixed(0) + '%';
 }
 
@@ -139,8 +139,8 @@ function resetGame() {
         direction *= -1;
     }
 
-    ball.velocityX = INITIAL_BALL_SPEED * direction;
-    ball.velocityY = INITIAL_BALL_SPEED * direction;
+    ball.velocityX = initialBallSpeed * direction;
+    ball.velocityY = initialBallSpeed * direction;
 
     numHits = 0;
     updateBallSpeed();
@@ -160,9 +160,9 @@ function movePaddle() {
 function doAiAction() {
     // Controls the right paddle to follow the ball if the AI is active.    
     if (ball.y < rightPaddleY + paddleHeight) {
-        rightPaddleVelocity = -PADDLE_SPEED / 2; // AI moves at half speed.
+        rightPaddleVelocity = -paddleSpeed / 2; // AI moves at half speed.
     } else {
-        rightPaddleVelocity = PADDLE_SPEED / 2;
+        rightPaddleVelocity = paddleSpeed / 2;
     }
 }
 
@@ -196,16 +196,16 @@ function setupPaddleControls() {
     document.addEventListener("keydown", function (evt) {
         switch (evt.key) {
             case "w": // W key
-                leftPaddleVelocity = -PADDLE_SPEED;
+                leftPaddleVelocity = -paddleSpeed;
                 break;
             case "s": // S key
-                leftPaddleVelocity = PADDLE_SPEED;
+                leftPaddleVelocity = paddleSpeed;
                 break;
             case "ArrowUp": // Up arrow
-                rightPaddleVelocity = -PADDLE_SPEED;
+                rightPaddleVelocity = -paddleSpeed;
                 break;
             case "ArrowDown": // Down arrow
-                rightPaddleVelocity = PADDLE_SPEED;
+                rightPaddleVelocity = paddleSpeed;
                 break;
         }
     });
