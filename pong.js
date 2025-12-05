@@ -37,6 +37,10 @@ let rightPaddleVelocity = 0;
 let leftPaddleVelocity = 0;
 let paddleSpeed = 6;
 
+// Touch control targets (null means no active touch)
+let leftPaddleTargetY = null;
+let rightPaddleTargetY = null;
+
 let ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
@@ -147,6 +151,28 @@ function resetGame() {
 }
 
 function movePaddle() {
+    // --- Touch Control Logic ---
+    if (leftPaddleTargetY !== null) {
+        let dy = leftPaddleTargetY - (leftPaddleY + paddleHeight / 2);
+        if (Math.abs(dy) > paddleSpeed) {
+            leftPaddleVelocity = Math.sign(dy) * paddleSpeed;
+        } else {
+            leftPaddleVelocity = 0;
+            // Optional: Snap to exact position if close enough to avoid jitter
+            // leftPaddleY = leftPaddleTargetY - paddleHeight / 2; 
+        }
+    }
+
+    if (rightPaddleTargetY !== null && !isAiActive) {
+        let dy = rightPaddleTargetY - (rightPaddleY + paddleHeight / 2);
+        if (Math.abs(dy) > paddleSpeed) {
+            rightPaddleVelocity = Math.sign(dy) * paddleSpeed;
+        } else {
+            rightPaddleVelocity = 0;
+        }
+    }
+    // ---------------------------
+
     leftPaddleY += leftPaddleVelocity;
     rightPaddleY += rightPaddleVelocity;
 
@@ -227,10 +253,60 @@ function setupPaddleControls() {
     });
 }
 
+function setupTouchControls() {
+    canvas.addEventListener('touchstart', handleTouch, { passive: false });
+    canvas.addEventListener('touchmove', handleTouch, { passive: false });
+    canvas.addEventListener('touchend', handleTouch, { passive: false });
+    canvas.addEventListener('touchcancel', handleTouch, { passive: false });
+}
+
+function handleTouch(e) {
+    e.preventDefault(); // Prevent scrolling while playing
+
+    // Reset targets
+    let newLeftTarget = null;
+    let newRightTarget = null;
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleY = canvas.height / rect.height;
+    const scaleX = canvas.width / rect.width;
+
+    // Iterate through all active touches
+    for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        const touchX = (touch.clientX - rect.left) * scaleX;
+        const touchY = (touch.clientY - rect.top) * scaleY;
+
+        if (touchX < canvas.width / 2) {
+            newLeftTarget = touchY;
+        } else {
+            newRightTarget = touchY;
+        }
+    }
+
+    leftPaddleTargetY = newLeftTarget;
+    rightPaddleTargetY = newRightTarget;
+
+    // If touch ends, stop the paddle immediately
+    if (leftPaddleTargetY === null && leftPaddleVelocity !== 0) {
+        leftPaddleVelocity = 0;
+    }
+    if (rightPaddleTargetY === null && rightPaddleVelocity !== 0 && !isAiActive) {
+        rightPaddleVelocity = 0;
+    }
+}
+
 // Game start logic
 let gameInterval;
 let isGameRunning = false;
 let isAiActive = false;
+
+function isTouchDevice() {
+    return (('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0) ||
+        (navigator.msMaxTouchPoints > 0));
+}
+
 
 function startGame() {
     if (isGameRunning) return;
@@ -241,7 +317,10 @@ function startGame() {
     gameInterval = setInterval(game, 1000 / 60);
 }
 
-document.getElementById('playButton2P').addEventListener('click', startGame);
+document.getElementById('playButton2P').addEventListener('click', () => {
+    isAiActive = false;
+    startGame();
+});
 document.getElementById('playButton1P').addEventListener('click', () => {
     isAiActive = true;
     startGame();
@@ -249,4 +328,5 @@ document.getElementById('playButton1P').addEventListener('click', () => {
 
 
 setupPaddleControls();
+setupTouchControls();
 
