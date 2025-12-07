@@ -1,12 +1,33 @@
+:root {
+    --bg-color: #262626;
+    --text-color: #EEE;
+    --link-color: #EEE;
+    --link-hover-color: yellow;
+    --linkedin-color: lightsteelblue;
+    --border-color: #EEE;
+    --cursor-url: url('/images/cursor-alt-smaller.png');
+}
+
+[data-theme="light"] {
+    --bg-color: #f0f0f0;
+    --text-color: #262626;
+    --link-color: #262626;
+    --link-hover-color: #d00000;
+    --linkedin-color: #0077b5;
+    --border-color: #262626;
+    --cursor-url: url('/images/cursor-alt-smaller.png');
+}
+
 body,
 html {
     margin: 0;
     padding: 0;
-    background: #262626;
-    color: #EEE;
+    background: var(--bg-color);
+    color: var(--text-color);
     font-family: 'Press Start 2P', monospace;
     line-height: 1.5em;
-    cursor: url('/images/cursor-alt-smaller.png'), auto;
+    cursor: var(--cursor-url), auto;
+    transition: background 0.3s, color 0.3s;
 }
 
 h1 {
@@ -21,61 +42,166 @@ header,
 footer {
     text-align: center;
     padding: 1em;
-    background: #262626;
-    color: #EEE;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: background 0.3s, color 0.3s;
 }
 
 a {
-    color: #EEE;
+    color: var(--link-color);
     text-decoration-line: none;
-    cursor: url('/images/cursor-alt-smaller.png'), auto;
+    cursor: var(--cursor-url), auto;
 }
 
 .linkedin {
-    color: lightsteelblue;
+    color: var(--linkedin-color);
 }
 
 a:hover {
-    color: yellow;
+    color: var(--link-hover-color);
     background-color: transparent;
     text-decoration: underline;
 }
 
 nav {
-    color: #EEE;
+    color: var(--text-color);
 }
 
 nav ul {
     list-style-type: none;
     padding: 0;
-    color: #EEE;
+    color: var(--text-color);
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    /* Center the menu items */
+    flex-wrap: wrap;
+    /* Allow wrapping if screen is too small, but control it */
 }
 
 nav ul li {
-    display: inline;
-    margin-right: 20px;
-    color: #EEE;
+    color: var(--text-color);
+}
+
+.theme-toggle-btn {
+    background: none;
+    border: none;
+    cursor: var(--cursor-url), auto;
+    color: inherit;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    transform: translateY(-1.5px);
+    /* Visual correction for font baseline */
 }
 
 main {
     padding: 20px;
-    color: #EEE;
+    color: var(--text-color);
+}
+
+#controlInstructions {
+    font-size: .8rem;
 }
 
 canvas {
     border: solid;
     border-width: 0.5px;
+    border-color: var(--border-color);
     display: block;
     margin: 0 auto;
 }
 
+.pong-container {
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.retro-btn {
+    font-family: 'Press Start 2P', monospace;
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 2px solid var(--text-color);
+    padding: 15px 30px;
+    font-size: 16px;
+    cursor: var(--cursor-url), auto;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    box-shadow: 4px 4px 0px var(--text-color);
+}
+
+.retro-btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px var(--text-color);
+    background: var(--text-color);
+    color: var(--bg-color);
+}
+
+.retro-btn:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+}
 
 .info_panel {
     margin-top: 0.5em;
-    color: #EEE;
+    color: var(--text-color);
     font-family: 'Press Start 2P', monospace;
     text-align: center;
     display: flex;
     justify-content: center;
     gap: 1rem;
+}
+
+/* Theme Toggle Animation */
+.theme-icon {
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sun {
+    transition: r 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    mask: url(#moon-mask);
+}
+
+.sun-beams {
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    transform-origin: center;
+}
+
+#moon-mask circle {
+    transition: cx 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Light Mode State (Sun) */
+[data-theme="light"] .sun {
+    r: 6;
+}
+
+[data-theme="light"] .sun-beams {
+    opacity: 1;
+    transform: rotate(0deg);
+}
+
+[data-theme="light"] #moon-mask circle {
+    cx: 24;
+    /* Move mask out of the way */
+}
+
+/* Dark Mode State (Moon) */
+/* Default is Dark, but we need to target it specifically if data-theme is missing or explicit */
+:root:not([data-theme="light"]) .sun {
+    r: 9;
+    /* Larger circle for moon */
+    color: yellow;
+}
+
+:root:not([data-theme="light"]) .sun-beams {
+    opacity: 0;
+    transform: rotate(45deg);
+}
+
+:root:not([data-theme="light"]) #moon-mask circle {
+    cx: 17;
+    /* Move mask in to create crescent */
 }

@@ -24,25 +24,29 @@ handleMediaQueryChange(mediaQuery);
 let leftScore = 0;
 let rightScore = 0;
 
-const INITIAL_BALL_SPEED = 3;
+let initialBallSpeed = canvas.width / 200;
+let computedBallSpeed = Math.sqrt(initialBallSpeed ** 2 + initialBallSpeed ** 2);
 
-var paddleWidth = canvas.width / 60;
-var paddleHeight = canvas.height / 5;
+let paddleWidth = canvas.width / 60;
+let paddleHeight = canvas.height / 5;
 
-var rightPaddleY = (canvas.height - paddleHeight) / 2;
-var leftPaddleY = (canvas.height - paddleHeight) / 2;
+let rightPaddleY = (canvas.height - paddleHeight) / 2;
+let leftPaddleY = (canvas.height - paddleHeight) / 2;
 
-var rightPaddleVelocity = 0;
-var leftPaddleVelocity = 0;
-let debounceTick = false;
-const PADDLE_SPEED = 6;
+let rightPaddleVelocity = 0;
+let leftPaddleVelocity = 0;
+let paddleSpeed = 6;
 
-var ball = {
+// Touch control targets (null means no active touch)
+let leftPaddleTargetY = null;
+let rightPaddleTargetY = null;
+
+let ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     radius: canvas.width / 60,
-    velocityX: INITIAL_BALL_SPEED,
-    velocityY: INITIAL_BALL_SPEED,
+    velocityX: (Math.random() < 0.5 ? 1 : -1) * initialBallSpeed,
+    velocityY: (Math.random() < 0.5 ? 1 : -1) * initialBallSpeed,
     color: "#FFF"
 };
 
@@ -51,6 +55,8 @@ let numHits = 0;
 function drawPaddle(x, y) {
     ctx.fillStyle = "#FFF";
     ctx.fillRect(x, y, paddleWidth, paddleHeight);
+    ctx.strokeStyle = "#000";
+    ctx.strokeRect(x, y, paddleWidth, paddleHeight);
 }
 
 function drawBall() {
@@ -62,10 +68,13 @@ function drawBall() {
 }
 
 function collisionDetection() {
-    // debounce to prevent multiple hits
-    if (debounceTick) {
-        debounceTick = false;
-        return;
+    if (ball.y + ball.radius > canvas.height) {
+        ball.velocityY = -ball.velocityY;
+        ball.y = canvas.height - ball.radius; // Snap to edge
+    }
+    if (ball.y - ball.radius < 0) {
+        ball.velocityY = -ball.velocityY;
+        ball.y = ball.radius; // Snap to edge
     }
 
     // hit top/bottom wall
@@ -83,7 +92,6 @@ function collisionDetection() {
         updateBallSpeed();
         numHits++;
         updateHitCount();
-        debounceTick = true;
         return; // skip scoring check on paddle hit
     }
 
@@ -91,12 +99,11 @@ function collisionDetection() {
     if (ball.x - ball.radius < 0) {
         resetGame();
         increaseRightScore();
-        debounceTick = true;
-        // hit right
-    } else if (ball.x + ball.radius > canvas.width) {
+    }
+    // hit right
+    else if (ball.x + ball.radius > canvas.width) {
         resetGame();
         increaseLeftScore();
-        debounceTick = true;
     }
 }
 
@@ -116,7 +123,8 @@ function increaseRightScore() {
  */
 function updateBallSpeed() {
     const currentSpeed = Math.sqrt(ball.velocityX ** 2 + ball.velocityY ** 2);
-    document.getElementById('ball_speed').innerText = currentSpeed.toFixed(2);
+    const speedPercentage = (currentSpeed / computedBallSpeed) * 100;
+    document.getElementById('ball_speed').innerText = speedPercentage.toFixed(0) + '%';
 }
 
 /**
@@ -135,14 +143,36 @@ function resetGame() {
         direction *= -1;
     }
 
-    ball.velocityX = INITIAL_BALL_SPEED * direction;
-    ball.velocityY = INITIAL_BALL_SPEED * direction;
+    ball.velocityX = initialBallSpeed * direction;
+    ball.velocityY = initialBallSpeed * direction;
 
     numHits = 0;
     updateBallSpeed();
 }
 
 function movePaddle() {
+    // --- Touch Control Logic ---
+    if (leftPaddleTargetY !== null) {
+        let dy = leftPaddleTargetY - (leftPaddleY + paddleHeight / 2);
+        if (Math.abs(dy) > paddleSpeed) {
+            leftPaddleVelocity = Math.sign(dy) * paddleSpeed;
+        } else {
+            leftPaddleVelocity = 0;
+            // Optional: Snap to exact position if close enough to avoid jitter
+            // leftPaddleY = leftPaddleTargetY - paddleHeight / 2; 
+        }
+    }
+
+    if (rightPaddleTargetY !== null && !isAiActive) {
+        let dy = rightPaddleTargetY - (rightPaddleY + paddleHeight / 2);
+        if (Math.abs(dy) > paddleSpeed) {
+            rightPaddleVelocity = Math.sign(dy) * paddleSpeed;
+        } else {
+            rightPaddleVelocity = 0;
+        }
+    }
+    // ---------------------------
+
     leftPaddleY += leftPaddleVelocity;
     rightPaddleY += rightPaddleVelocity;
 
@@ -153,7 +183,19 @@ function movePaddle() {
     else if (rightPaddleY + paddleHeight > canvas.height) rightPaddleY = canvas.height - paddleHeight;
 }
 
+function doAiAction() {
+    // Controls the right paddle to follow the ball if the AI is active.    
+    if (ball.y < rightPaddleY + paddleHeight) {
+        rightPaddleVelocity = -paddleSpeed / 2; // AI moves at half speed.
+    } else {
+        rightPaddleVelocity = paddleSpeed / 2;
+    }
+}
+
 function update() {
+    if (isAiActive) {
+        doAiAction();
+    }
     movePaddle();
 
     ball.x += ball.velocityX;
@@ -174,42 +216,117 @@ function game() {
     render();
 }
 
-// 60 FPS.
-setInterval(game, 1000 / 60);
 
-updateBallSpeed();
+function setupPaddleControls() {
+    // controls
+    document.addEventListener("keydown", function (evt) {
+        switch (evt.key) {
+            case "w": // W key
+                leftPaddleVelocity = -paddleSpeed;
+                break;
+            case "s": // S key
+                leftPaddleVelocity = paddleSpeed;
+                break;
+            case "ArrowUp": // Up arrow
+                rightPaddleVelocity = -paddleSpeed;
+                break;
+            case "ArrowDown": // Down arrow
+                rightPaddleVelocity = paddleSpeed;
+                break;
+        }
+    });
+    document.addEventListener("keyup", function (evt) {
+        switch (evt.key) {
+            case "w": // W key
+                leftPaddleVelocity = 0;
+                break;
+            case "s": // S key
+                leftPaddleVelocity = 0;
+                break;
+            case "ArrowUp": // Up arrow
+                rightPaddleVelocity = 0;
+                break;
+            case "ArrowDown": // Down arrow
+                rightPaddleVelocity = 0;
+                break;
+        }
+    });
+}
 
-// controls
-document.addEventListener("keydown", function (evt) {
-    switch (evt.keyCode) {
-        case 87: // W key
-            leftPaddleVelocity = -PADDLE_SPEED;
-            break;
-        case 83: // S key
-            leftPaddleVelocity = PADDLE_SPEED;
-            break;
-        case 38: // Up arrow
-            rightPaddleVelocity = -PADDLE_SPEED;
-            break;
-        case 40: // Down arrow
-            rightPaddleVelocity = PADDLE_SPEED;
-            break;
+function setupTouchControls() {
+    canvas.addEventListener('touchstart', handleTouch, { passive: false });
+    canvas.addEventListener('touchmove', handleTouch, { passive: false });
+    canvas.addEventListener('touchend', handleTouch, { passive: false });
+    canvas.addEventListener('touchcancel', handleTouch, { passive: false });
+}
+
+function handleTouch(e) {
+    e.preventDefault(); // Prevent scrolling while playing
+
+    // Reset targets
+    let newLeftTarget = null;
+    let newRightTarget = null;
+
+    const rect = canvas.getBoundingClientRect();
+    const scaleY = canvas.height / rect.height;
+    const scaleX = canvas.width / rect.width;
+
+    // Iterate through all active touches
+    for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        const touchX = (touch.clientX - rect.left) * scaleX;
+        const touchY = (touch.clientY - rect.top) * scaleY;
+
+        if (touchX < canvas.width / 2) {
+            newLeftTarget = touchY;
+        } else {
+            newRightTarget = touchY;
+        }
     }
-});
-document.addEventListener("keyup", function (evt) {
-    switch (evt.keyCode) {
-        case 87: // W key
-            leftPaddleVelocity = 0;
-            break;
-        case 83: // S key
-            leftPaddleVelocity = 0;
-            break;
-        case 38: // Up arrow
-            rightPaddleVelocity = 0;
-            break;
-        case 40: // Down arrow
-            rightPaddleVelocity = 0;
-            break;
+
+    leftPaddleTargetY = newLeftTarget;
+    rightPaddleTargetY = newRightTarget;
+
+    // If touch ends, stop the paddle immediately
+    if (leftPaddleTargetY === null && leftPaddleVelocity !== 0) {
+        leftPaddleVelocity = 0;
     }
+    if (rightPaddleTargetY === null && rightPaddleVelocity !== 0 && !isAiActive) {
+        rightPaddleVelocity = 0;
+    }
+}
+
+// Game start logic
+let gameInterval;
+let isGameRunning = false;
+let isAiActive = false;
+
+function isTouchDevice() {
+    return (('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0) ||
+        (navigator.msMaxTouchPoints > 0));
+}
+
+
+function startGame() {
+    if (isGameRunning) return;
+    isGameRunning = true;
+    document.getElementById('playButtonContainer').style.display = 'none';
+
+    // 60 FPS.
+    gameInterval = setInterval(game, 1000 / 60);
+}
+
+document.getElementById('playButton2P').addEventListener('click', () => {
+    isAiActive = false;
+    startGame();
 });
+document.getElementById('playButton1P').addEventListener('click', () => {
+    isAiActive = true;
+    startGame();
+});
+
+
+setupPaddleControls();
+setupTouchControls();
 
