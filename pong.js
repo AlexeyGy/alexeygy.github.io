@@ -55,6 +55,7 @@ let numHits = 0;
 function drawPaddle(x, y) {
     ctx.fillStyle = "#FFF";
     ctx.fillRect(x, y, paddleWidth, paddleHeight);
+    ctx.lineWidth = 2;
     ctx.strokeStyle = "#000";
     ctx.strokeRect(x, y, paddleWidth, paddleHeight);
 }
@@ -63,8 +64,9 @@ function drawBall() {
     ctx.fillStyle = ball.color;
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, false);
-    ctx.closePath();
     ctx.fill();
+    ctx.strokeStyle = "#000";
+    ctx.stroke();
 }
 
 function collisionDetection() {
@@ -329,4 +331,46 @@ document.getElementById('playButton1P').addEventListener('click', () => {
 
 setupPaddleControls();
 setupTouchControls();
+setupMouseControls();
+
+let isMouseDown = false;
+
+function setupMouseControls() {
+    canvas.addEventListener('mousedown', (e) => {
+        isMouseDown = true;
+        handleMouse(e);
+    });
+    canvas.addEventListener('mousemove', (e) => {
+        if (isMouseDown) {
+            handleMouse(e);
+        }
+    });
+    canvas.addEventListener('mouseup', () => {
+        isMouseDown = false;
+        leftPaddleTargetY = null;
+        rightPaddleTargetY = null;
+    });
+    canvas.addEventListener('mouseleave', () => {
+        isMouseDown = false;
+        leftPaddleTargetY = null;
+        rightPaddleTargetY = null;
+    });
+}
+
+function handleMouse(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleY = canvas.height / rect.height;
+    const scaleX = canvas.width / rect.width;
+
+    const mouseX = (e.clientX - rect.left) * scaleX;
+    const mouseY = (e.clientY - rect.top) * scaleY;
+
+    if (mouseX < canvas.width / 2) {
+        leftPaddleTargetY = mouseY;
+        rightPaddleTargetY = null;
+    } else {
+        rightPaddleTargetY = mouseY;
+        leftPaddleTargetY = null;
+    }
+}
 
