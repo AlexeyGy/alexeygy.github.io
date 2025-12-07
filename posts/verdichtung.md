@@ -1,4 +1,4 @@
-# 2025-11-05 - Verdichtung
+## 2025-11-05 - Verdichtung
 
 Verdichtung is German word that loosely means "densification". It represents an alternative to urban sprawl that is prevalent in US citizies and has been the dominant strategy for Zurich's expansion.
 
