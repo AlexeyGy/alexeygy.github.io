@@ -97,7 +97,7 @@ nav ul li {
 }
 
 main {
-    padding: 20px;
+    padding: 20px 20%;
     color: var(--text-color);
 }
 
@@ -204,4 +204,23 @@ canvas {
 :root:not([data-theme="light"]) #moon-mask circle {
     cx: 17;
     /* Move mask in to create crescent */
+}
+.blog-post-link {
+    display: block;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 2px solid var(--border-color);
+    transition: all 0.2s ease;
+    text-decoration: none; /* Remove default underline */
+    color: var(--text-color); /* Ensure text uses variable */
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
+.blog-post-link:hover {
+    background-color: var(--text-color); /* Invert colors */
+    color: var(--bg-color) !important;
+    transform: translateX(10px); /* Little nudge effect */
+    text-decoration: none; /* Keep underline off on hover */
+    box-shadow: 4px 4px 0px var(--text-color); /* Retro shadow pop */
 }
