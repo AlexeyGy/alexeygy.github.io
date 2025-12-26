@@ -1,0 +1,31 @@
+<html lang="en"><head>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2020-10-19 - How to set up a proper Google Mail filter on responses only</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        main {
+            font-family: Helvetica, Arial, sans-serif;
+        }
+    </style>    
+</head>
+
+<body>
+    <div id="nav-placeholder"></div>
+    <main id="content"><h1>2020-10-19 - How to set up a proper Google Mail filter on responses only</h1>
+<h3>Problem</h3>
+<p>When creating events in gmail with a large number of invitees, you, by default receive an email per response. But maybe you are just like me and want your inbox to be clean s.t. all invite responses go into one folder excluding invites that you get from others you find that this is neither covered in the official guide by Google nor in other articles.</p>
+<h3>Solution</h3>
+<p>The following “has the words” filter makes sure to only include mails which are responses and are actual invite responses by checking the attachment name.</p>
+<pre><code>subject:(Declined OR Accepted) ((to:(alexeygy@uber.com) (invite.ics OR invite.vcs)) has:attachment)
+</code></pre>
+<p>It can be set under <code>settings/Filters</code> and <code>Blocked Addresses/ Create a new filter</code>.</p>
+<p><img src="/images/0_ioWsIdcYLX2rUNMs.png" alt="screenshot of gmail"></p>
+<p>So far it worked for me reliably helping to keep my inbox clean. text in <a href="http://daringfireball.net/projects/markdown/">Markdown</a>. Use the toolbar above, or click the <strong>?</strong> button for formatting help.</p>
+</main>
+    <div id="footer-placeholder"></div>
+    <script src="/header_footer_script.js"></script>
+
+
+</body></html>
